@@ -1,15 +1,18 @@
 class Pokemon {
   final String name;
-  final String imageUrl;
+  final String url;
 
-  Pokemon({required this.name, required this.imageUrl});
+  Pokemon({required this.name, required this.url});
+
+  String get imageUrl {
+    final id = url.split('/')[url.split('/').length - 2];
+    return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png';
+  }
 
   factory Pokemon.fromJson(Map<String, dynamic> json) {
-    String url = json['url'];
-    String id = url.split('/')[url.split('/').length - 2];
     return Pokemon(
-      name: json['name'][0].toUpperCase() + json['name'].substring(1),
-      imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png',
+      name: json['name'].toString().toUpperCase(),
+      url: json['url'],
     );
   }
 }

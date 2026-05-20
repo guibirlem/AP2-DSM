@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutterpoke/models/pokemon.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,18 +20,6 @@ class MyApp extends StatelessWidget {
       ),
       home: const PokedexPage(),
     );
-  }
-}
-
-class Pokemon {
-  final String name;
-  final String url;
-
-  const Pokemon({required this.name, required this.url});
-
-  String get image {
-    final id = url.split('/')[url.split('/').length - 2];
-    return 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/$id.png';
   }
 }
 
@@ -59,10 +48,7 @@ class _PokedexPageState extends State<PokedexPage> {
         final data = json.decode(response.body);
         final List resultados = data['results'];
         setState(() {
-          _todos = resultados.map((item) => Pokemon(
-            name: item['name'].toString().toUpperCase(),
-            url: item['url']
-          )).toList();
+          _todos = resultados.map((item) => Pokemon.fromJson(item)).toList();
           _filtrados = _todos;
           _carregando = false;
         });
@@ -131,7 +117,7 @@ class _PokedexPageState extends State<PokedexPage> {
                               child: Padding(
                                 padding: const EdgeInsets.all(12),
                                 child: Image.network(
-                                  pokemon.image,
+                                  pokemon.imageUrl,
                                   errorBuilder: (c, e, s) => const Icon(Icons.catching_pokemon, size: 50, color: Colors.grey),
                                 ),
                               ),
